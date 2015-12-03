@@ -82,6 +82,7 @@
     <ClCompile Include="binarizeImageAlg1.cpp" />
     <ClCompile Include="binarizeImageAlg3.cpp" />
     <ClCompile Include="binarizeImageAlg2.cpp" />
+    <ClCompile Include="gsmooth.cpp" />
     <ClCompile Include="imgcut3.cpp" />
     <ClCompile Include="imgcutmulti.cpp" />
     <ClCompile Include="demo.cpp" />

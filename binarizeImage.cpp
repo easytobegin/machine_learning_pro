@@ -83,7 +83,9 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	//opencv三个通道[0] = b,[1] = g,[2] = r
 
-	//根据论文的算法:矩阵相减
+	/*
+	根据论文的算法:矩阵相减,二阶微分求得效果图,和拉普拉斯不太一样
+	*/
 	Mat A_matrix = canny_result(Range(1, total_rows-1), Range(2, total_cols));
 
 	Mat B_matrix = canny_result(Range(1, total_rows-1), Range(1, total_cols-1));
@@ -102,14 +104,28 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	imshow("dy_Result", dy);
 	waitKey(0);
 	
-	Mat abs_dx;
-	Mat dst;
+	Mat dst; //合并dx和dy后的图像
 
 	addWeighted(dx,0.5,dy,0.5,0,dst);
 	imshow("效果图合并dx,dy:",dst);
 
 	waitKey(0);
 	
+	/*
+	% Bias high-confidence background pixels
+	*/
+	int sr = 20; //no need found to vary this parameter
+	
+	Mat dst1;
+	GaussianBlur(dst,dst1 , Size(3, 3), 0, 0, BORDER_DEFAULT);
+	imshow("做高斯平滑降噪后:", dst1);
+	Mat res = dst - dst1;
+	imshow("噪声:",res);
+	waitKey(0);
+
+
+
+
 	//求x方向的梯度
 	/*Scharr(image, dxx, CV_16S, 1, 0, 1, 0, BORDER_DEFAULT);
 	convertScaleAbs(dxx, abs_dx);
