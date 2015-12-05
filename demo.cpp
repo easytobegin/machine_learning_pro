@@ -1,5 +1,5 @@
 #include"macros.h"
-#include <opencv2/opencv.hpp>
+#include<opencv2/opencv.hpp>
 using namespace cv;
 using namespace std;
 
@@ -7,7 +7,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE,co
 
 int main(int argc, char* argv[])
 {
-	const char* imagename = "caosheng.png";
+	const char* imagename = "fruits.jpg";
 
 	//从文件中读入图像
 	Mat img = imread(imagename);

@@ -1,6 +1,6 @@
 #include"macros.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include<opencv2/opencv.hpp>
+#include<opencv2/highgui/highgui.hpp>
 #include<opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 using namespace std;
@@ -9,6 +9,7 @@ using namespace std;
 IplImage *g_pSrcImage, *g_pCannyImg; //原始图,目标图
 const char *pstrWindowsCannyTitle = "边缘检测图";
 
+Mat Gauss_sommth(Mat image, double sigma, double radius, string method); //声明
 //cvCreateTrackbar的回调函数
 void on_trackbar(int threshold)
 {
@@ -96,18 +97,18 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	Mat dx = A_matrix - B_matrix;  //dx
 
-	imshow("dx_Result", dx);
+	//imshow("dx_Result", dx);
 	waitKey(0);
 
 	Mat dy = C_matrix - D_matrix;  //dy
 
-	imshow("dy_Result", dy);
+	//imshow("dy_Result", dy);
 	waitKey(0);
 	
 	Mat dst; //合并dx和dy后的图像
 
 	addWeighted(dx,0.5,dy,0.5,0,dst);
-	imshow("效果图合并dx,dy:",dst);
+	//imshow("效果图合并dx,dy:",dst);
 
 	waitKey(0);
 	
@@ -115,13 +116,14 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	% Bias high-confidence background pixels
 	*/
 	int sr = 20; //no need found to vary this parameter
-	
-	Mat dst1;
+	Gauss_sommth(image, sr, 3 * sr, "mirror");
+
+	/*Mat dst1;
 	GaussianBlur(dst,dst1 , Size(3, 3), 0, 0, BORDER_DEFAULT);
 	imshow("做高斯平滑降噪后:", dst1);
 	Mat res = dst - dst1;
 	imshow("噪声:",res);
-	waitKey(0);
+	waitKey(0);*/
 
 
 
