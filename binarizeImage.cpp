@@ -1,11 +1,10 @@
 #include"macros.h"
 #include<opencv2/opencv.hpp>
-#include<opencv2/highgui/highgui.hpp>
-#include<opencv2/imgproc/imgproc.hpp>
+#include<iostream>
+
 using namespace cv;
 using namespace std;
 
-#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 IplImage *g_pSrcImage, *g_pCannyImg; //原始图,目标图
 const char *pstrWindowsCannyTitle = "边缘检测图";
 
@@ -52,8 +51,8 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	if (nargin < 5 || cnt4 == 0)
 		sigE = 0.6;
 	*/
-
-
+	
+	//cout << "行:" << image.rows << " " << "列:" << image.cols << endl;  //原图640 * 1024
 	/*
 	//灰度处理
 	//cout << "wgt:" << wgt << " " << "thi:" << thi << " " << "tlo:" << tlo << " " << "sigE:" << sigE << endl;
@@ -102,11 +101,10 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	Mat dy = C_matrix - D_matrix;  //dy
 
-
-	// cout << total_rows << " " << total_cols << endl;
+	//cout << total_rows << " " << total_cols << endl;
 	//imshow("dy_Result", dy);
 	//waitKey(0);
-	
+
 	Mat dst; //合并dx和dy后的图像
 
 	addWeighted(dx,0.5,dy,0.5,0,dst);
@@ -114,6 +112,8 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	//waitKey(0);
 	
+
+
 	/*
 	% Bias high-confidence background pixels
 	*/
@@ -135,110 +135,38 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	Mat test1, test2;
 	Mat test3, test4;
 
-	hc = ~((canny_result(Range(1, total_rows-1), Range(1, total_cols-1)) & (dy > 0))  //1 - total_row - 1
+	hc = ~((canny_result(Range(1, total_rows-1), Range(1, total_cols-1)) & (dy > 0))  //638 * 1022
 		| (canny_result(Range(2, total_rows), Range(1, total_cols-1)) & (dy <= 0)));
 
+	//cout << "行:" << hc.rows << " " << "列:" << hc.cols << endl;
 	/*imshow("hc:", hc);
 	waitKey(0);
 	*/
 
-	vc = ~((canny_result(Range(1, total_rows-1), Range(1, total_cols-1)) & (dx > 0))
+	vc = ~((canny_result(Range(1, total_rows-1), Range(1, total_cols-1)) & (dx > 0))  //638 * 1022
 		| (canny_result(Range(1, total_rows-1), Range(2, total_cols)) & (dx <= 0)));
 	
+	//cout << "行:" << vc.rows << " " << "列:" << vc.cols << endl;
 	/*imshow("vc:", vc);
 	waitKey(0);
 	*/
 
-	hc = hc(Range(1, total_rows-2), Range(1,total_cols-2));  //取-1有bug
+	hc = hc(Range(1, total_rows-2), Range(1,total_cols-2));  //638 * 1022
 
+
+	//cout << "行:" << vc.rows << " " << "列:" << vc.cols << endl;
 	//hc_result = hc(Range(1, total_rows-1), Range(1, total_cols-1));
 	
 	/*
 	imshow("hc:", hc);
 	waitKey(0); 
-	/*
-
-	vc = vc(Range(1, total_rows-2), Range(1,total_cols-2)); //取-1有bug
-
-	imshow("vc", vc);
-
-	waitKey(0);
-
-	/*Mat dst1;
-	GaussianBlur(dst,dst1 , Size(3, 3), 0, 0, BORDER_DEFAULT);
-	imshow("做高斯平滑降噪后:", dst1);
-	Mat res = dst - dst1;
-	imshow("噪声:",res);
-	waitKey(0);*/
-
-
-
-
-	//求x方向的梯度
-	/*Scharr(image, dxx, CV_16S, 1, 0, 1, 0, BORDER_DEFAULT);
-	convertScaleAbs(dxx, abs_dx);
-	imshow("dx_Result", abs_dx);
 	*/
 
-	//imshow("dx_Result", dy);
-	
-	//result为canny后的图像
+	vc = vc(Range(1, total_rows-2), Range(1,total_cols-2)); //638 * 1022
 
-	//src为res
-
-	//拉普拉斯,Laplace变换------对canny后的图像操作(1)
-	/*Mat src_gray,dst;
-	int kernel_size = 3;
-	int scale = 1;
-	int delta = 0;
-	int ddepth = CV_16S;
-	char *window_name = "Laplace Demo";
-
-	int c;
-	
-	GaussianBlur(result,result,Size(3,3),0,0,BORDER_DEFAULT); //高斯平滑降噪
-
-	//cvtColor(result, src_gray, CV_RGB2GRAY); //转化为灰度
-
-	Mat abs_dst;
-	Laplacian(result, dst, ddepth, kernel_size, scale,delta, BORDER_DEFAULT);
-	convertScaleAbs(dst, abs_dst);
-	cvNamedWindow(window_name, CV_WINDOW_AUTOSIZE);
-	imshow(window_name,abs_dst);
-
+	/*imshow("vc", vc);
 	waitKey(0);*/
 
-	//声明变量
-	
-	/*
-	//拉普拉斯,Laplace变换------对原图像image操作(2)
-	Mat src_gray, dst;
-	int kernel_size = 3;
-	int scale = 1;
-	int delta = 0;
-	int ddepth = CV_16S;
-	char *window_name = "Laplace Demo";
-
-	int c;
-
-	//高斯平滑降噪
-	GaussianBlur(image, image, Size(3, 3), 0, 0, BORDER_DEFAULT); //高斯平滑降噪
-
-	//使用cvtColor转换为灰度图
-	//cvtColor(result, src_gray, CV_RGB2GRAY); //转化为灰度
-
-	Mat abs_dst;
-	
-	//对灰度图使用Laplacian算子
-	Laplacian(image, dst, ddepth, kernel_size, scale, delta, BORDER_DEFAULT);
-	
-	//将输出图像的深度转化为CV_8U
-	convertScaleAbs(dst, abs_dst);
-	cvNamedWindow(window_name, CV_WINDOW_AUTOSIZE);
-	imshow(window_name, abs_dst);
-
-	waitKey(0);
-	*/
 	
 }
 
