@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 		fprintf(stderr, "Can not load image %s\n", imagename);
 		return -1;
 	}
-
+	
 	binarizeImage(img,-1,-1,-1,-1,imagename);
 	//imshow("image", res);
 	//waitKey();

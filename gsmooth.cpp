@@ -65,6 +65,7 @@ Mat Gauss_sommth(Mat image,double sigma,double radius,string method)
 		//cvShowImage("show row:", hrow);
 		waitKey(0);
 
+
 	}
 	return sm;
 }

@@ -80,8 +80,6 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	int total_rows = canny_result.rows; //获取图像的行
 	int total_cols = canny_result.cols; //获取图像的列
 
-	
-
 	//opencv三个通道[0] = b,[1] = g,[2] = r
 
 	/*
@@ -97,26 +95,74 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	Mat dx = A_matrix - B_matrix;  //dx
 
+	//cout << dx << endl;
+
 	//imshow("dx_Result", dx);
-	waitKey(0);
+	//waitKey(0);
 
 	Mat dy = C_matrix - D_matrix;  //dy
 
+
+	// cout << total_rows << " " << total_cols << endl;
 	//imshow("dy_Result", dy);
-	waitKey(0);
+	//waitKey(0);
 	
 	Mat dst; //合并dx和dy后的图像
 
 	addWeighted(dx,0.5,dy,0.5,0,dst);
 	//imshow("效果图合并dx,dy:",dst);
 
-	waitKey(0);
+	//waitKey(0);
 	
 	/*
 	% Bias high-confidence background pixels
 	*/
+
 	int sr = 20; //no need found to vary this parameter
-	Gauss_sommth(image, sr, 3 * sr, "mirror");
+	//Gauss_sommth(dst, sr, 3 * sr, "mirror");
+
+	/*
+	先跳过高斯平滑
+	*/
+
+
+	/*
+	% Assemble matrices of edge connections -- horizontal and vertical
+	*/
+	Mat hc;
+	Mat vc;
+
+	Mat test1, test2;
+	Mat test3, test4;
+
+	hc = ~((canny_result(Range(1, total_rows-1), Range(1, total_cols-1)) & (dy > 0))  //1 - total_row - 1
+		| (canny_result(Range(2, total_rows), Range(1, total_cols-1)) & (dy <= 0)));
+
+	/*imshow("hc:", hc);
+	waitKey(0);
+	*/
+
+	vc = ~((canny_result(Range(1, total_rows-1), Range(1, total_cols-1)) & (dx > 0))
+		| (canny_result(Range(1, total_rows-1), Range(2, total_cols)) & (dx <= 0)));
+	
+	/*imshow("vc:", vc);
+	waitKey(0);
+	*/
+
+	hc = hc(Range(1, total_rows-2), Range(1,total_cols-2));  //取-1有bug
+
+	//hc_result = hc(Range(1, total_rows-1), Range(1, total_cols-1));
+	
+	/*
+	imshow("hc:", hc);
+	waitKey(0); 
+	/*
+
+	vc = vc(Range(1, total_rows-2), Range(1,total_cols-2)); //取-1有bug
+
+	imshow("vc", vc);
+
+	waitKey(0);
 
 	/*Mat dst1;
 	GaussianBlur(dst,dst1 , Size(3, 3), 0, 0, BORDER_DEFAULT);
