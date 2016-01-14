@@ -13,7 +13,7 @@ using namespace std;
 /*
 没有参数时,sigma,radius分别等于inf,而method没有方法时为NULL
 */
-Mat Gauss_sommth(Mat image,double sigma,double radius,string method)
+Mat Gauss_sommth(Mat image, double sigma, double radius, string method)
 {
 	Mat sm;
 	Mat a1 = image;
@@ -21,7 +21,7 @@ Mat Gauss_sommth(Mat image,double sigma,double radius,string method)
 	Mat origin = image.clone(); //原图像,深拷贝
 	IplImage *origin1; //原图像,深拷贝
 	origin1 = &IplImage(origin);
-	IplImage *src,*hcol,*hrow;
+	IplImage *src, *hcol, *hrow;
 	src = &IplImage(image);
 	hcol = &IplImage(a1);
 	hrow = &IplImage(a2);
@@ -41,14 +41,14 @@ Mat Gauss_sommth(Mat image,double sigma,double radius,string method)
 	}
 	/*if (method == NULL)
 	{
-		method = "none";
+	method = "none";
 	}*/
 	if (sigma == 0)
 	{
 		sm = image;
 	}
 	else  //matlab : H = FSPECIAL('gaussian', HSIZE, SIGMA)
-	{ 
+	{
 		//hcol = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1);
 		//hrow = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1);
 

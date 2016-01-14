@@ -3,7 +3,8 @@
 using namespace cv;
 using namespace std;
 
-void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE,const char *str); //ÉùÃ÷
+void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, const char *str); //ÉùÃ÷
+vector<vector<double> > CreateDoubleMatrix(int row, int col);
 
 int main(int argc, char* argv[])
 {
@@ -18,8 +19,8 @@ int main(int argc, char* argv[])
 		fprintf(stderr, "Can not load image %s\n", imagename);
 		return -1;
 	}
-	
-	binarizeImage(img,-1,-1,-1,-1,imagename);
+
+	binarizeImage(img, -1, -1, -1, -1, imagename);
 	//imshow("image", res);
 	//waitKey();
 
