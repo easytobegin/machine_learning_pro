@@ -40,6 +40,12 @@ double ***Create_3_Matrix(const int *parameter) //建立一个矩阵,double型,三维
 	return three_Maxrix;
 }
 
+int** mxCreateCellMatrix() //建立二维单位阵
+{
+	
+}
+
+
 void DestroyArray_2(double **Two_Mat, const int *parameter) //销毁二维矩阵
 {
 	int i;
@@ -73,7 +79,12 @@ int GetNumberOfDimensions(double ***Dimensions) //返回3维度
 	return 3;
 }
 
-int *Get2Dimensions(double **Dimensions) //返回各维的元素个数,二维,增加哨兵,就是边界判断,边界为INF
+
+/*
+@parameter
+total_element:引用,供GetNumberOfElements调用
+*/
+int *Get2Dimensions(double **Dimensions,int &total_element) //返回各维的元素个数,二维,增加哨兵,就是边界判断,边界为INF
 {
 	int i, j;
 	int *result;
@@ -99,13 +110,17 @@ int *Get2Dimensions(double **Dimensions) //返回各维的元素个数,二维,增加哨兵,就是
 	}
 	result[0] = cnt1;
 	result[1] = cnt;
-
+	total_element = cnt * cnt1;
 	//cout << cnt << " " << cnt1 << endl;
 
 	return result;
 }
 
-int *Get3Dimensions(double ***Dimensions) //返回各维度的元素个数,三维
+/*
+@parameter
+total_element:引用,供GetNumberOfElements调用
+*/
+int *Get3Dimensions(double ***Dimensions, int &total_element) //返回各维度的元素个数,三维
 {
 	int i, j, k;
 	int *result;
@@ -139,10 +154,25 @@ int *Get3Dimensions(double ***Dimensions) //返回各维度的元素个数,三维
 	result[0] = cnt;
 	result[1] = cnt1;
 	result[2] = cnt2;
+	total_element = cnt * cnt1 * cnt2;
 	return result;
 }
 
+int Get_2_NumberOfElements(double **Dimensions) //二维,获取元素个数
+{
+	int total_number;
+	Get2Dimensions(Dimensions, total_number);
+	return total_number;
+}
 
+int Get_3_NumberOfElements(double ***Dimensions) //三维,获取元素个数
+{
+	int total_number;
+	Get3Dimensions(Dimensions, total_number);
+	return total_number;
+}
+
+//输入的时候再判断isDouble and isComplex
 /*
 int main()
 {

@@ -4,7 +4,6 @@ using namespace cv;
 using namespace std;
 
 void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, const char *str); //ÉùÃ÷
-vector<vector<double> > CreateDoubleMatrix(int row, int col);
 
 int main(int argc, char* argv[])
 {
