@@ -7,7 +7,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 int main(int argc, char* argv[])
 {
-	const char* imagename = "fruits.jpg";
+	const char* imagename = "sample.jpg";
 
 	//从文件中读入图像
 	Mat img = imread(imagename);

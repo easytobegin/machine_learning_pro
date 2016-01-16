@@ -9,6 +9,8 @@ IplImage *g_pSrcImage, *g_pCannyImg; //原始图,目标图
 const char *pstrWindowsCannyTitle = "边缘检测图";
 
 Mat Gauss_sommth(Mat image, double sigma, double radius, string method); //声明
+void Mat_Change_To_Matrix(Mat image);
+void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4);  //四个参数都是矩阵类型，都是二维矩阵
 //cvCreateTrackbar的回调函数
 void on_trackbar(int threshold)
 {
@@ -110,7 +112,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	addWeighted(dx, 0.5, dy, 0.5, 0, lap);
 	//imshow("效果图合并dx,dy:",dst);
 
-	cout << "行:" << lap.rows << " " << "列:" << lap.cols << endl;
+	cout << "lap行:" << lap.rows << " " << "列:" << lap.cols << endl;
 
 
 	//waitKey(0);
@@ -141,7 +143,8 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	hc = ~((canny_result(Range(1, total_rows - 1), Range(1, total_cols - 1)) & (dy > 0))  //638 * 1022
 		| (canny_result(Range(2, total_rows), Range(1, total_cols - 1)) & (dy <= 0)));
 
-	//cout << "行:" << hc.rows << " " << "列:" << hc.cols << endl;
+	cout << "hc行:" << hc.rows << " " << "列:" << hc.cols << endl;
+	waitKey(0);
 	/*imshow("hc:", hc);
 	waitKey(0);
 	*/
@@ -157,7 +160,8 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	hc = hc(Range(1, total_rows - 2), Range(1, total_cols - 2));  //638 * 1022
 
 
-	//cout << "行:" << vc.rows << " " << "列:" << vc.cols << endl;
+	cout << "vc行:" << vc.rows << " " << "列:" << vc.cols << endl;
+	waitKey(0);
 	//hc_result = hc(Range(1, total_rows-1), Range(1, total_cols-1));
 
 	/*
@@ -167,16 +171,55 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	vc = vc(Range(1, total_rows - 2), Range(1, total_cols - 2)); //638 * 1022
 
-	/*imshow("vc", vc);
-	waitKey(0);*/
+
+	//imshow("vc", vc);
+	//waitKey(0);
 	//cout << 1500 - lap << endl;
 	//cout << lap << endl;
+
+
+
+	/*lap.convertTo(lap,CV_64FC1,-1.0/255.0,1.0/255.0); //范围-1.0 / 255.0 ~ 1.0 / 255.0之间
+	imshow("lap:", lap);
+	cout<<1500-lap<<endl;
+	waitKey(0);*/
+
+	/*
+	test
+	*/
+	//lap.convertTo(lap,CV_64FC1,1.0/255,-1.0/255);
+
+	//Mat_Change_To_Matrix(lap);
+	//cout<<lap<<endl;
 
 	//Mat_<float> b;
 	//lap.convertTo(b, CV_32F);
 
 	//cout << b << endl;
 
+	//cout<<1500 - lap<<endl;
+
+	//imshow("1500-lap",1500-lap);
+	//imshow("1500+lap",1500+lap);
+	//waitKey(0);
+
+	lap.convertTo(lap, CV_64FC1, 1.0 / 255, -1.0 / 255);
+
+	/*cout<<lap<<endl;
+	waitKey(0);*/
+	int i, j;
+	double *Mi;
+	Mi = (double *)malloc(1000 * sizeof(double *));
+	for (i = 0; i<lap.rows; i++)
+	{
+		Mi = lap.ptr<double>(i);
+		for (j = 0; j<lap.cols; j++)
+		{
+			double value = Mi[j];
+			cout << value << endl;
+		}
+	}
+	//imgcut3(1500-lap,1500+lap,wgt*hc,wgt*vc);
 }
 
 

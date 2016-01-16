@@ -2,7 +2,10 @@
 #include<vector>
 #include<cstring>
 #include<cstdio>
+#include <opencv2/opencv.hpp>
+
 using namespace std;
+using namespace cv;
 
 const double esp = 0.000001;
 const double INF = 0x3f3f3f3f + 0.1;
@@ -23,27 +26,34 @@ double **Create_2_Matrix(const int *parameter) //建立一个矩阵,double型,二维
 
 double ***Create_3_Matrix(const int *parameter) //建立一个矩阵,double型,三维
 {
-	double ***three_Maxrix;
+	double ***three_Matrix;
 	int i, j;
-	three_Maxrix = (double ***)malloc((parameter[0] + 1) * sizeof(double**)); //+1的原因在于有边界,好判断元素个数
+	three_Matrix = (double ***)malloc((parameter[0] + 1) * sizeof(double**)); //+1的原因在于有边界,好判断元素个数
 	for (i = 0; i < parameter[0] + 1; i++)
 	{
-		three_Maxrix[i] = (double **)malloc((parameter[1] + 1)* sizeof(double*));  //+1的原因在于有边界,好判断元素个数
+		three_Matrix[i] = (double **)malloc((parameter[1] + 1)* sizeof(double*));  //+1的原因在于有边界,好判断元素个数
 	}
 	for (i = 0; i < parameter[0] + 1; i++)
 	{
 		for (j = 0; j < parameter[1] + 1; j++)
 		{
-			three_Maxrix[i][j] = (double *)malloc((parameter[2] + 1) * sizeof(double));  //+1的原因在于有边界,好判断元素个数
+			three_Matrix[i][j] = (double *)malloc((parameter[2] + 1) * sizeof(double));  //+1的原因在于有边界,好判断元素个数
 		}
 	}
-	return three_Maxrix;
+	return three_Matrix;
 }
 
-int** mxCreateCellMatrix() //建立二维单位阵
+
+
+/*int** mxCreateCellMatrix()
 {
-	
-}
+
+}*/
+
+/*void CreateNumericArray(int ndim,int *dims)
+{
+
+}*/
 
 
 void DestroyArray_2(double **Two_Mat, const int *parameter) //销毁二维矩阵
@@ -79,12 +89,11 @@ int GetNumberOfDimensions(double ***Dimensions) //返回3维度
 	return 3;
 }
 
-
 /*
 @parameter
 total_element:引用,供GetNumberOfElements调用
 */
-int *Get2Dimensions(double **Dimensions,int &total_element) //返回各维的元素个数,二维,增加哨兵,就是边界判断,边界为INF
+int *Get2Dimensions(double **Dimensions, int &total_element) //返回各维的元素个数,二维,增加哨兵,就是边界判断,边界为INF
 {
 	int i, j;
 	int *result;
@@ -171,6 +180,24 @@ int Get_3_NumberOfElements(double ***Dimensions) //三维,获取元素个数
 	Get3Dimensions(Dimensions, total_number);
 	return total_number;
 }
+
+
+/*void Mat_Change_To_Matrix(Mat image)
+{
+int i,j;
+int div = 64;
+int nr= image.rows; // number of rows
+int nc= image.cols * image.channels(); // total number of elements per line
+for (int j=0; j<nr; j++) {
+uchar* data= image.ptr<uchar>(j);
+for (int i=0; i<nc; i++) {
+*data++= *data/div*div + div/2;
+double v = *data;
+cout<<v<<endl;
+
+} // end of row
+}
+}*/
 
 //输入的时候再判断isDouble and isComplex
 /*
