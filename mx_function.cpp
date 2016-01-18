@@ -14,7 +14,7 @@ double *Create_1_Matrix(int cols) //建立一个矩阵,double型,一维
 {
 	double *one_Matrix;
 	int i;
-	one_Matrix = (double *)malloc(80000 * sizeof(double *));
+	one_Matrix = (double *)malloc(80000*sizeof(double *));
 	return one_Matrix;
 }
 
@@ -54,14 +54,14 @@ double ***Create_3_Matrix(const int *parameter) //建立一个矩阵,double型,三维
 
 
 
-/*int** mxCreateCellMatrix()
+/*int** mxCreateCellMatrix() 
 {
-
+	
 }*/
 
 /*void CreateNumericArray(int ndim,int *dims)
 {
-
+	
 }*/
 
 
@@ -102,7 +102,7 @@ int GetNumberOfDimensions(double ***Dimensions) //返回3维度
 @parameter
 total_element:引用,供GetNumberOfElements调用
 */
-int *Get2Dimensions(double **Dimensions, int &total_element) //返回各维的元素个数,二维,增加哨兵,就是边界判断,边界为INF
+int *Get2Dimensions(double **Dimensions,int &total_element) //返回各维的元素个数,二维,增加哨兵,就是边界判断,边界为INF
 {
 	int i, j;
 	int *result;
@@ -192,18 +192,18 @@ int Get_3_NumberOfElements(double ***Dimensions) //三维,获取元素个数
 
 double* Mat_change_to_1_Matrix(Mat image) //Mat转换成普通的一维矩阵并返回
 {
-	int i, j;
+	int i,j;
 	double *Matrix;
 	double *Mi;
 	Matrix = Create_1_Matrix((image.rows + 10) * (image.cols + 10));
-	Mi = (double *)malloc(1000 * sizeof(double *));
-	for (i = 0; i<image.rows; i++)  //行列遍历Mat,逐个像素点赋值给Matrix1这个普通矩阵
+	Mi = (double *)malloc(1000*sizeof(double *));
+	for(i=0;i<image.rows;i++)  //行列遍历Mat,逐个像素点赋值给Matrix1这个普通矩阵
 	{
 		Mi = image.ptr<double>(i);
-		for (j = 0; j<image.cols; j++)
+		for(j=0;j<image.cols;j++)
 		{
-			double value = Mi[j];
-			Matrix[i*image.cols + j] = Mi[j];
+			 double value = Mi[j];
+			 Matrix[i*image.cols + j] = Mi[j];
 		}
 	}
 	return Matrix;
@@ -211,23 +211,23 @@ double* Mat_change_to_1_Matrix(Mat image) //Mat转换成普通的一维矩阵并返回
 
 double** Mat_change_to_2_Matrix(Mat image)  //Mat转换成普通的二维矩阵并返回
 {
-	int i, j;
+	int i,j;
 	double **Matrix1;
 	double *Mi;
 	int *aa; //二维行乘以列
-	aa = (int *)malloc(5 * sizeof(int *));
+	aa = (int *)malloc(5*sizeof(int *));
 	aa[0] = image.rows + 10;
 	aa[1] = image.cols + 10;
-	Mi = (double *)malloc(1000 * sizeof(double *));
+	Mi = (double *)malloc(1000*sizeof(double *));
 	Matrix1 = Create_2_Matrix(aa);
-	for (i = 0; i<image.rows; i++)  //行列遍历Mat,逐个像素点赋值给Matrix1这个普通矩阵
+	for(i=0;i<image.rows;i++)  //行列遍历Mat,逐个像素点赋值给Matrix1这个普通矩阵
 	{
 		Mi = image.ptr<double>(i);
-		for (j = 0; j<image.cols; j++)
+		for(j=0;j<image.cols;j++)
 		{
-			double value = Mi[j];
-			Matrix1[i][j] = Mi[j];
-			cout << Matrix1[i][j] << endl;
+			 double value = Mi[j];
+			 Matrix1[i][j] = Mi[j];
+			 cout<<Matrix1[i][j]<<endl;
 		}
 	}
 	return Matrix1;
@@ -236,19 +236,19 @@ double** Mat_change_to_2_Matrix(Mat image)  //Mat转换成普通的二维矩阵并返回
 
 /*void Mat_Change_To_Matrix(Mat image)
 {
-int i,j;
-int div = 64;
-int nr= image.rows; // number of rows
-int nc= image.cols * image.channels(); // total number of elements per line
-for (int j=0; j<nr; j++) {
-uchar* data= image.ptr<uchar>(j);
-for (int i=0; i<nc; i++) {
-*data++= *data/div*div + div/2;
-double v = *data;
-cout<<v<<endl;
-
-} // end of row
-}
+	int i,j;
+	int div = 64;
+    int nr= image.rows; // number of rows  
+    int nc= image.cols * image.channels(); // total number of elements per line  
+    for (int j=0; j<nr; j++) {  
+	uchar* data= image.ptr<uchar>(j);  
+          for (int i=0; i<nc; i++) {  
+				  *data++= *data/div*div + div/2;  
+				 double v = *data;
+				 cout<<v<<endl;
+					
+            } // end of row                   
+      }  
 }*/
 
 //输入的时候再判断isDouble and isComplex

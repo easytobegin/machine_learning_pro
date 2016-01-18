@@ -1,4 +1,6 @@
 #include"macros.h"
+#include"mx_function.h"
+#include"imgcut3.h"
 #include<opencv2/opencv.hpp>
 #include<iostream>
 
@@ -9,11 +11,7 @@ IplImage *g_pSrcImage, *g_pCannyImg; //原始图,目标图
 const char *pstrWindowsCannyTitle = "边缘检测图";
 
 Mat Gauss_sommth(Mat image, double sigma, double radius, string method); //声明
-void Mat_Change_To_Matrix(Mat image);
-void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4);  //四个参数都是矩阵类型，都是二维矩阵
-//cvCreateTrackbar的回调函数
-double **Mat_change_to_2_Matrix(Mat image);
-double **Create_2_Matrix(const int *parameter); //建立一个矩阵,double型,二维
+
 
 void on_trackbar(int threshold)
 {
@@ -24,7 +22,7 @@ void on_trackbar(int threshold)
 
 void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, const char* str) //规定负数代表没有值
 {
-	/*int nargin = 1; //image算一个参数
+	int nargin = 1; //image算一个参数
 	int cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0;
 	if (wgt >= 0)
 	{
@@ -55,7 +53,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	tlo = 0.1;
 	if (nargin < 5 || cnt4 == 0)
 	sigE = 0.6;
-	*/
+	
 
 	//cout << "行:" << image.rows << " " << "列:" << image.cols << endl;  //原图640 * 1024
 	/*
@@ -68,34 +66,47 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	imshow("Gray Image", gray_image);//显示灰度图；
 	waitKey(0);//等待直到用户按下一个按键之后退出。
 	*/
-
+	Mat lap; //合并dx和dy后的图像
 	Mat gray_image;
 	cvtColor(image, gray_image, CV_RGB2GRAY);//转换图片颜色，灰度处理
+	threshold(gray_image,gray_image,175,255,THRESH_BINARY);
+	GaussianBlur( gray_image, gray_image, Size(3,3), 0, 0, BORDER_DEFAULT );
 
+	imshow("gray_image",gray_image);
 	//canny边缘检测
 	Mat canny_result;
-	Canny(gray_image, canny_result, 220, 230);
-	//cvNamedWindow("cannyResult");
-	imshow("cannyResult", canny_result);
-	//waitKey(0);
+	//Canny(gray_image, canny_result, 0, 0);
 
+	/*拉普拉斯*/
+	int scale = 1;
+	int delta = 0;
+	int ddepth = CV_16S;
+	int kernel_size = 3; 
+	Laplacian( gray_image, lap, ddepth, kernel_size, scale, delta, BORDER_DEFAULT );
+
+
+	//cvNamedWindow("cannyResult");
+	//convertScaleAbs( canny_result, canny_result );
+	Canny(gray_image,canny_result,120,130);
+	/*imshow("cannyResult", canny_result);
+	waitKey(0); */
 	//imshow("原始图:", image);
 	//const CvArr *after_deal = (CvArr *)&canny_result; //把canny结果转换为CvArr类型
-	int total_rows = canny_result.rows; //获取图像的行
-	int total_cols = canny_result.cols; //获取图像的列
+	int total_rows = gray_image.rows; //获取图像的行
+	int total_cols = gray_image.cols; //获取图像的列
 
 	//opencv三个通道[0] = b,[1] = g,[2] = r
 
 	/*
 	根据论文的算法:矩阵相减,二阶微分求得效果图,和拉普拉斯不太一样
 	*/
-	Mat A_matrix = canny_result(Range(1, total_rows - 1), Range(2, total_cols));
+	Mat A_matrix = gray_image(Range(1, total_rows - 1), Range(2, total_cols));  //这是拉普拉斯
 
-	Mat B_matrix = canny_result(Range(1, total_rows - 1), Range(1, total_cols - 1));
+	Mat B_matrix = gray_image(Range(1, total_rows - 1), Range(1, total_cols - 1));
 
-	Mat C_matrix = canny_result(Range(2, total_rows), Range(1, total_cols - 1));
+	Mat C_matrix = gray_image(Range(2, total_rows), Range(1, total_cols - 1));
 
-	Mat D_matrix = canny_result(Range(1, total_rows - 1), Range(1, total_cols - 1));
+	Mat D_matrix = gray_image(Range(1, total_rows - 1), Range(1, total_cols - 1));
 
 	Mat dx = A_matrix - B_matrix;  //dx
 
@@ -110,11 +121,10 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	//imshow("dy_Result", dy);
 	//waitKey(0);
 
-	Mat lap; //合并dx和dy后的图像
+	
 
 	addWeighted(dx, 0.5, dy, 0.5, 0, lap);
 	//imshow("效果图合并dx,dy:",dst);
-
 	cout << "lap行:" << lap.rows << " " << "列:" << lap.cols << endl;
 
 
@@ -142,15 +152,16 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	Mat test1, test2;
 	Mat test3, test4;
-
+	/*
+	canny_result结果
+	*/
 	hc = ~((canny_result(Range(1, total_rows - 1), Range(1, total_cols - 1)) & (dy > 0))  //638 * 1022
 		| (canny_result(Range(2, total_rows), Range(1, total_cols - 1)) & (dy <= 0)));
 
 	cout << "hc行:" << hc.rows << " " << "列:" << hc.cols << endl;
 	//waitKey(0);
 	/*imshow("hc:", hc);
-	waitKey(0);
-	*/
+	waitKey(0);*/
 
 	vc = ~((canny_result(Range(1, total_rows - 1), Range(1, total_cols - 1)) & (dx > 0))  //638 * 1022
 		| (canny_result(Range(1, total_rows - 1), Range(2, total_cols)) & (dx <= 0)));
@@ -178,14 +189,14 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	//waitKey(0);
 	//cout << 1500 - lap << endl;
 	//cout << lap << endl;
-
+	
 
 
 	/*lap.convertTo(lap,CV_64FC1,-1.0/255.0,1.0/255.0); //范围-1.0 / 255.0 ~ 1.0 / 255.0之间
 	imshow("lap:", lap);
 	cout<<1500-lap<<endl;
 	waitKey(0);*/
-
+	
 	/*
 	test
 	*/
@@ -198,52 +209,20 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	//imshow("1500-lap",1500-lap);
 	//imshow("1500+lap",1500+lap);
 	//waitKey(0);
-
+	//imshow("lap:",lap);
 	//lap.convertTo(lap,CV_64FC1,-1.0/255,1.0/255);
-	lap.convertTo(lap, CV_64FC1, -1.0 / 255, 1.0 / 255);
-	hc.convertTo(hc, CV_64FC1, 1.0 / 255);
+	lap.convertTo(lap,CV_64FC1,-1.0/255,1.0/255);
+	hc.convertTo(hc,CV_64FC1,1.0/255);
 	//cout<<hc<<endl;
-	vc.convertTo(vc, CV_64FC1, 1.0 / 255);
+	vc.convertTo(vc,CV_64FC1,1.0/255);
 	//cout<<vc<<endl;
 	int test_rows = hc.rows;
 	int test_cols = hc.cols;
 	int test_rows1 = vc.rows;
 	int test_cols1 = vc.cols;
-	int i, j;
-	/*for(i=0;i<test_rows;i++)
-	{
-	for(j=0;j<test_cols;j++)
-	{
-	if(hc.at<uchar>(i,j) == 255)  //白
-	{
-	hc.at<uchar>(i,j) = 1;
-	}
-	else
-	hc.at<uchar>(i,j) = 0;
-	}
-	}
-	for(i=0;i<test_rows1;i++)
-	{
-	for(j=0;j<test_cols1;j++)
-	{
-	if(vc.at<uchar>(i,j) == 255)
-	{
-	vc.at<uchar>(i,j) = 1;
-	}
-	else
-	vc.at<uchar>(i,j) = 0;
-	}
-	}*/
-
-	//cout<<hc<<endl;
-	//cout<<hc*160.0<<endl;
-	/*imshow("hc:",hc*160);
-	imshow("vc:",vc*160);
-	imshow("lap:",lap*160);*/
-	//waitKey(0);
-	//cout<<lap<<endl;
-	//waitKey(0);
-	imgcut3(1500 - lap, 1500 + lap, 160.0*hc, 160.0*vc);
+	int i,j;
+	
+	imgcut3(1500-lap,1500+lap,wgt*hc,wgt*vc);
 }
 
 

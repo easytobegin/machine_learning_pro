@@ -1,23 +1,50 @@
 #include<iostream>
 #include"graph.h"
+#include"mx_function.h"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
 using namespace std;
 
-double* Mat_change_to_1_Matrix(Mat image); //Mat转换成普通的一维矩阵并返回
-double *Create_1_Matrix(int cols);//建立一个矩阵,double型,一维
-double **Create_2_Matrix(const int *parameter); //建立一个矩阵,double型,二维
-double ***Create_3_Matrix(const int *parameter); //建立一个矩阵,double型,三维
-void DestroyArray_2(double **Two_Mat, const int *parameter); //销毁二维矩阵
-void DestroyArray_3(double ***Three_Mat, const int *parameter); //销毁三维矩阵
-int GetNumberOfDimensions(double **Dimensions); //返回2维度
-int GetNumberOfDimensions(double ***Dimensions); //返回3维度
-int *Get2Dimensions(double **Dimensions, int &total_element); //返回各维的元素个数,二维,增加哨兵,就是边界判断,边界为INF
-int *Get3Dimensions(double ***Dimensions, int &total_element); //返回各维度的元素个数,三维
-int Get_2_NumberOfElements(double **Dimensions); //二维,获取元素个数
-int Get_3_NumberOfElements(double ***Dimensions); //三维,获取元素个数
 
+void FillInternalContours(IplImage *pBinary, double dAreaThre)   
+{   
+    double dConArea;   
+    CvSeq *pContour = NULL;   
+    CvSeq *pConInner = NULL;   
+    CvMemStorage *pStorage = NULL;   
+    // 执行条件   
+    if (pBinary)   
+    {   
+        // 查找所有轮廓   
+        pStorage = cvCreateMemStorage(0);   
+        cvFindContours(pBinary, pStorage, &pContour, sizeof(CvContour), CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);   
+        // 填充所有轮廓   
+        cvDrawContours(pBinary, pContour, CV_RGB(255, 255, 255), CV_RGB(255, 255, 255), 2, CV_FILLED, 8, cvPoint(0, 0));  
+        // 外轮廓循环   
+        int wai = 0;  
+        int nei = 0;  
+        for (; pContour != NULL; pContour = pContour->h_next)   
+        {   
+            wai++;  
+            // 内轮廓循环   
+            for (pConInner = pContour->v_next; pConInner != NULL; pConInner = pConInner->h_next)   
+            {   
+                nei++;  
+                // 内轮廓面积   
+                dConArea = fabs(cvContourArea(pConInner, CV_WHOLE_SEQ));  
+                printf("%f\n", dConArea);  
+                if (dConArea <= dAreaThre)   
+                {   
+                    cvDrawContours(pBinary, pConInner, CV_RGB(255, 255, 255), CV_RGB(255, 255, 255), 0, CV_FILLED, 8, cvPoint(0, 0));  
+                }   
+            }   
+        }   
+        printf("wai = %d, nei = %d", wai, nei);  
+        cvReleaseMemStorage(&pStorage);   
+        pStorage = NULL;   
+    }   
+}   
 
 /*
 matlab调试结果:
@@ -27,20 +54,20 @@ vc 99 * 398
 wgt.*hc = 98 * 399
 wgt.*vc = 99 * 398
 */
-void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4)  //四个参数都是矩阵类型，都是二维矩阵
+void imgcut3(Mat para1,Mat para2,Mat para3,Mat para4)  //四个参数都是矩阵类型，都是二维矩阵
 {
-	int i, j;
+	int i,j;
 	int ndim = 2; //维度为2
-	long n, m, nmin;
-	double *src, *snk, *nbr;
+	long n,m,nmin;
+	double *src,*snk,*nbr;
 	double flow = 0;
 
 	//建立一个图像矩阵转普通矩阵的函数
 	//mxGetDimensions不用那么麻烦,直接返回行数和列数
 	int *dim1;
 	int *dim2;
-	dim1 = (int *)malloc(10 * sizeof(int *));
-	dim2 = (int *)malloc(10 * sizeof(int *));
+	dim1 = (int *)malloc(10*sizeof(int *));
+	dim2 = (int *)malloc(10*sizeof(int *));
 	dim1[0] = para1.rows; //参数1的行
 	dim1[1] = para1.cols; //参数1的列
 	dim2[0] = para2.rows; //参数2的行
@@ -50,9 +77,9 @@ void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4)  //四个参数都是矩阵类型
 	cout<<dim2[0]<<"*"<<dim2[1]<<endl;
 	打印的结果值相同
 	*/
-	for (i = 0; i<ndim; i++)
+	for(i=0;i<ndim;i++)
 	{
-		if (i == 0)  //mxGetDimensions(prhs[2+i])
+		if(i == 0)  //mxGetDimensions(prhs[2+i])
 		{
 			dim2[0] = para3.rows; //参数3的行
 			dim2[1] = para3.cols; //参数3的列
@@ -63,65 +90,65 @@ void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4)  //四个参数都是矩阵类型
 			dim2[1] = para4.cols; //参数4的列
 		}
 	}
-
+	
 
 	/*
 	获取各个Mat矩阵的范围
 	*/
-	int row1 = para1.rows; int col1 = para1.cols;
-	int row2 = para2.rows; int col2 = para2.cols;
-	int row3 = para3.rows; int col3 = para3.cols;
-	int row4 = para4.rows; int col4 = para4.cols;
+	int row1 = para1.rows;int col1 = para1.cols;
+	int row2 = para2.rows;int col2 = para2.cols;
+	int row3 = para3.rows;int col3 = para3.cols;
+	int row4 = para4.rows;int col4 = para4.cols;
 	int result1 = (row1 + 10) * (col1 + 10);
 	int result2 = (row2 + 10) * (col2 + 10);
 	int result3 = (row3 + 10) * (col3 + 10);
 	int result4 = (row4 + 10) * (col4 + 10);
-
+	
 	src = (double *)malloc(result1 * sizeof(double *));
 	snk = (double *)malloc(result2 * sizeof(double *));
 
 	src = Mat_change_to_1_Matrix(para1); //Mat转普通矩阵
-
+	
 	snk = Mat_change_to_1_Matrix(para2); //Mat转普通矩阵
-
-	typedef Graph<double, double, double> GraphType;
-	GraphType *g = new GraphType(dim1[0] * dim1[1],
-		(dim1[0] - 1)*dim1[1] + dim1[0] * (dim1[1] - 1));
+	
+	typedef Graph<double,double,double> GraphType;
+	GraphType *g = new GraphType(dim1[0]*dim1[1],
+                               (dim1[0]-1)*dim1[1]+dim1[0]*(dim1[1]-1));
 
 	// add nodes
-	for (i = 0; i < dim1[0] * dim1[1]; i++) {
-		g->add_node();
+	for (i = 0; i < dim1[0]*dim1[1]; i++) {
+		g -> add_node(); 
 	}
 	// add source/sink weights
-	for (i = 0; i < dim1[0] * dim1[1]; i++) {
-		g->add_tweights(i, src[i], snk[i]);
+	for (i = 0; i < dim1[0]*dim1[1]; i++) {
+		g -> add_tweights(i,src[i],snk[i]);
 	}
 
 	// add neighbor links
-	nbr = (double *)malloc(result3 * sizeof(double *));
+	nbr = (double *)malloc(result3 * sizeof(double *)); 
 
-	nbr = Mat_change_to_1_Matrix(para3);
-	int cnt = 0, cnt1 = 0;
-
-	for (i = 0; i < dim1[0] - 1; i++)
+	nbr = Mat_change_to_1_Matrix(para3); 
+	int cnt = 0,cnt1 = 0;
+	 
+	for (i = 0; i < dim1[0]-1; i++) //对para3做连边
 	{
-		for (j = 0; j < dim1[1]; j++)
+		for (j = 0; j < dim1[1]; j++) 
 		{
-			if (nbr[i + j*(dim1[0] - 1)] == 0) //白色部分
+			if (int(nbr[i+j*(dim1[0]-1)]) == 0) //白色部分
 			{
-				g->add_edge(i + j*dim1[0], i + j*dim1[0] + 1,
-					nbr[i + j*(dim1[0] - 1)], nbr[i + j*(dim1[0] - 1)]);
+				g -> add_edge(i+j*dim1[0],i+j*dim1[0]+1,
+                      nbr[i+j*(dim1[0]-1)],nbr[i+j*(dim1[0]-1)]);
 			}
 		}
 	}
 	nbr = Mat_change_to_1_Matrix(para4); //%lf
-
-
-	for (int i = 0; i<para4.rows; i++)
+	
+	
+	/*for(int i=0;i<para4.rows;i++)
 	{
-		for (int j = 0; j<para4.cols; j++)
+		for(int j=0;j<para4.cols;j++)
 		{
-			if (nbr[i*para4.cols + j] > 0) //黑色显示的
+			if(nbr[i*para4.cols+j] > 0) //黑色显示的
 			{
 				cnt++;
 				//cout<<i<<" "<<j<<endl;  //准确的
@@ -132,97 +159,105 @@ void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4)  //四个参数都是矩阵类型
 				//cout<<nbr[i*para4.cols+j]<<endl;
 			}
 		}
-	}
+	}*/
 
-
-	Mat res2(para4.rows, para4.cols, CV_64FC1, nbr);
+	
+	//Mat res2(para4.rows,para4.cols,CV_64FC1,nbr);
 	//cout<<"res2:"<<res2<<endl;
 	/*imshow("res2",res2);
 	waitKey(0);
 	printf("%d个黑色字体%d白色像素点",cnt,cnt1);*/
-	for (i = 0; i < dim1[0]; i++)
+	for (i = 0; i < dim1[0]; i++)   //对para4做连边
 	{
-		for (j = 0; j < dim1[1] - 1; j++)
+		for (j = 0; j < dim1[1]-1; j++) 
 		{
-			if (int(nbr[i + j*dim1[0]]) == 0) //逐列,连边，白色部分,黑色为字体 作者是大于>
-			{
+			if (int(nbr[i+j*dim1[0]]) == 0) //逐列,连边，黑色部分,白色为字体
+			{	
 				//cout<<nbr[i+j*dim1[0]]<<endl;
-				g->add_edge(i + j*dim1[0], i + (j + 1)*dim1[0],
-					nbr[i + j*dim1[0]], nbr[i + j*dim1[0]]);
+				g -> add_edge(i+j*dim1[0],i+(j+1)*dim1[0],
+                      nbr[i+j*dim1[0]],nbr[i+j*dim1[0]]);
 				//cout<<"i:"<<i<<"j:"<<j<<endl;
 			}
 			/*else //白
 			{
-			cout<<"i:"<<i<<"j:"<<j<<endl;
+				cout<<"i:"<<i<<"j:"<<j<<endl;
 			}*/
 		}
 	}
 	// do calculation
-	flow = g->maxflow();
+	flow = g -> maxflow();
 
 
 	//输出为一维矩阵,out为输出参数第一个
 	int out[70000];
-
-	for (i = 0; i < dim1[0]; i++)
+	
+	for (i = 0; i < dim1[0]; i++) 
 	{
-		for (j = 0; j < dim1[1]; j++)
+		for (j = 0; j < dim1[1]; j++) 
 		{
-			out[i + j*dim1[0]] = g->what_segment(i + j*dim1[0]) == GraphType::SINK;
+			out[i+j*dim1[0]] = g->what_segment(i+j*dim1[0]) == GraphType::SINK;
 			//cout<<g->what_segment(i+j*dim1[0])<<" ";
-			//printf("%d ",out[i+j*dim1[0]]); //每次都是最后两个为1，奇怪.
+			//printf("%d ",out[i+j*dim1[0]]);
 		}
 		//printf("\n");
 	}
 	int *out_test;
 	out_test = (int *)malloc(dim1[0] * dim1[1] * sizeof(int *));
 
-	int cnt10 = 0, cnt9 = 0;
-	for (i = 0; i<dim1[0]; i++)
+	int cnt10 = 0,cnt9 = 0;
+	for(i=0;i<dim1[0];i++)
 	{
-		for (j = 0; j<dim1[1]; j++)
+		for(j=0;j<dim1[1];j++)
 		{
 			//cout<<out[j+i*dim1[1]]<<endl; //几乎都是0
-			if (out[i + j*dim1[0]] == 0)
+			if(out[i+j*dim1[0]] == 0)
 			{
-				out_test[i + j *dim1[0]] = 0;
+				out_test[i + j *dim1[0]] = 255;
 				cnt9++;
 			}
 			else
 			{
-				out_test[i + j *dim1[0]] = 255;
+				out_test[i + j *dim1[0]] = 0;
 				cnt10++;
 			}
 			//cout<<out_test[i + j *dim1[0]]<<" ";
 		}
 		//printf("\n");
 	}
-	cout << "黑:" << cnt10 << "白:" << cnt9 << endl;
-
+	cout<<"黑:"<<cnt10<<"白:"<<cnt9<<endl;
+	
 	//Mat res(dim1[0],dim1[1],CV_16SC1,out_test);
-	Mat res(dim1[0], dim1[1], CV_8UC1);
+	Mat res(dim1[0],dim1[1],CV_8UC1);
 	//res.at<uchar>(0,0) = 0;
-	for (i = 0; i<dim1[0]; i++)
+	for(i=0;i<dim1[0];i++)
 	{
-		for (j = 0; j<dim1[1]; j++)
+		for(j=0;j<dim1[1];j++)
 		{
-			res.at<uchar>(i, j) = out_test[j + i*dim1[1]];
+			res.at<uchar>(i,j) = out_test[j+i*dim1[1]];
 		}
 	}
 	/*
 	for(i=0;i<dim1[0];i++)
 	{
-	for(j=0;j<dim1[1];j++)
-	{
-	res.at<uchar>(i,j) = out_test[i+j*dim1[0]];
-	}
+		for(j=0;j<dim1[1];j++)
+		{
+			res.at<uchar>(i,j) = out_test[i+j*dim1[0]];
+		}
 	}*/
 	//cout<<res.rows<<" "<<res.cols<<endl;
 	//waitKey(0);
-	imshow("After_do_imgcut3", res);
+
+	/*IplImage *src1;
+
+    src1 = &IplImage(res);
+
+	FillInternalContours(src1, 200); */
+	imshow("Do_imgcut3_result",res);
 	waitKey(0);
 
-
+	/*cvNamedWindow("img");  
+    cvShowImage("img", src1);  
+	waitKey(0);*/
 
 	//可能还有另外一个输出参数,第二个
 	double out_2;

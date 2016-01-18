@@ -1,10 +1,9 @@
 #include"macros.h"
 #include<cstdio>
+#include"binarizeImage.h"
 #include<opencv2/opencv.hpp>
 using namespace cv;
 using namespace std;
-
-void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, const char *str); //ÉùÃ÷
 
 int main(int argc, char* argv[]){
 	/*FILE *stream;
