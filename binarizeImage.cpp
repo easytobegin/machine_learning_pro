@@ -55,7 +55,6 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	sigE = 0.6;
 	
 
-	//cout << "行:" << image.rows << " " << "列:" << image.cols << endl;  //原图640 * 1024
 	/*
 	//灰度处理
 	//cout << "wgt:" << wgt << " " << "thi:" << thi << " " << "tlo:" << tlo << " " << "sigE:" << sigE << endl;

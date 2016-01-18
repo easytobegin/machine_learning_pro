@@ -30,9 +30,6 @@
     <ClCompile Include="imgcut3.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="imgcutmulti.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="demo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

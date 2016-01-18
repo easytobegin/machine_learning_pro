@@ -88,7 +88,6 @@
     <ClCompile Include="graph.cpp" />
     <ClCompile Include="gsmooth.cpp" />
     <ClCompile Include="imgcut3.cpp" />
-    <ClCompile Include="imgcutmulti.cpp" />
     <ClCompile Include="demo.cpp" />
     <ClCompile Include="maxflow.cpp" />
     <ClCompile Include="mx_function.cpp" />
