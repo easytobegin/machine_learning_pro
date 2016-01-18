@@ -14,7 +14,7 @@ double *Create_1_Matrix(int cols) //建立一个矩阵,double型,一维
 {
 	double *one_Matrix;
 	int i;
-	one_Matrix = (double *)malloc(80000*sizeof(double *));
+	one_Matrix = (double *)malloc(cols*sizeof(double *));
 	return one_Matrix;
 }
 
@@ -195,8 +195,8 @@ double* Mat_change_to_1_Matrix(Mat image) //Mat转换成普通的一维矩阵并返回
 	int i,j;
 	double *Matrix;
 	double *Mi;
-	Matrix = Create_1_Matrix((image.rows + 10) * (image.cols + 10));
-	Mi = (double *)malloc(1000*sizeof(double *));
+	Matrix = Create_1_Matrix((image.rows + 10) * (image.cols + 10) * 30 );
+	Mi = (double *)malloc((image.rows *image.cols * 30) * sizeof(double *));
 	for(i=0;i<image.rows;i++)  //行列遍历Mat,逐个像素点赋值给Matrix1这个普通矩阵
 	{
 		Mi = image.ptr<double>(i);

@@ -68,7 +68,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	Mat lap; //合并dx和dy后的图像
 	Mat gray_image;
 	cvtColor(image, gray_image, CV_RGB2GRAY);//转换图片颜色，灰度处理
-	threshold(gray_image,gray_image,175,255,THRESH_BINARY);
+	threshold(gray_image,gray_image,140,255,THRESH_BINARY);
 	GaussianBlur( gray_image, gray_image, Size(3,3), 0, 0, BORDER_DEFAULT );
 
 	imshow("gray_image",gray_image);
