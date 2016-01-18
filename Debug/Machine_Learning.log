@@ -1,24 +1,28 @@
-﻿生成启动时间为 2016/1/16 18:48:12。
+﻿生成启动时间为 2016/1/18 15:29:01。
      1>项目“G:\ML_pro\Machine_Learning\Machine_Learning\Machine_Learning.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          G:\vs2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt mx_function.cpp
+     1>cl : 命令行 warning D9028: 最小重新生成失败，正在转换为标准生成
          mx_function.cpp
      1>g:\opencv\opencv\build\include\opencv2\core\mat.hpp(1965): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>g:\opencv\opencv\build\include\opencv2\core\persistence.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>g:\opencv\opencv\build\include\opencv2\core\utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>g:\ml_pro\machine_learning\machine_learning\mx_function.cpp(16): warning C4101: “i”: 未引用的局部变量
        Link:
          G:\vs2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\ML_pro\Machine_Learning\Machine_Learning\Debug\Machine_Learning.exe" /INCREMENTAL /NOLOGO opencv_ts300.lib opencv_world300.lib opencv_ts300.lib opencv_world300.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"G:\ML_pro\Machine_Learning\Machine_Learning\Debug\Machine_Learning.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\ML_pro\Machine_Learning\Machine_Learning\Debug\Machine_Learning.lib" /MACHINE:X86 Debug\binarizeImage.obj
          Debug\binarizeImageAlg1.obj
          Debug\binarizeImageAlg3.obj
          Debug\binarizeImageAlg2.obj
+         Debug\graph.obj
          Debug\gsmooth.obj
          Debug\imgcut3.obj
          Debug\imgcutmulti.obj
          Debug\demo.obj
+         Debug\maxflow.obj
          Debug\mx_function.obj
          Machine_Learning.vcxproj -> G:\ML_pro\Machine_Learning\Machine_Learning\Debug\Machine_Learning.exe
      1>已完成生成项目“G:\ML_pro\Machine_Learning\Machine_Learning\Machine_Learning.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:01.75
+已用时间 00:00:02.01

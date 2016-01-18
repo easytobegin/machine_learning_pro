@@ -9,6 +9,15 @@ using namespace cv;
 
 const double esp = 0.000001;
 const double INF = 0x3f3f3f3f + 0.1;
+
+double *Create_1_Matrix(int cols) //建立一个矩阵,double型,一维
+{
+	double *one_Matrix;
+	int i;
+	one_Matrix = (double *)malloc(80000 * sizeof(double *));
+	return one_Matrix;
+}
+
 /*
 parameter为每一维度的个数
 */
@@ -179,6 +188,49 @@ int Get_3_NumberOfElements(double ***Dimensions) //三维,获取元素个数
 	int total_number;
 	Get3Dimensions(Dimensions, total_number);
 	return total_number;
+}
+
+double* Mat_change_to_1_Matrix(Mat image) //Mat转换成普通的一维矩阵并返回
+{
+	int i, j;
+	double *Matrix;
+	double *Mi;
+	Matrix = Create_1_Matrix((image.rows + 10) * (image.cols + 10));
+	Mi = (double *)malloc(1000 * sizeof(double *));
+	for (i = 0; i<image.rows; i++)  //行列遍历Mat,逐个像素点赋值给Matrix1这个普通矩阵
+	{
+		Mi = image.ptr<double>(i);
+		for (j = 0; j<image.cols; j++)
+		{
+			double value = Mi[j];
+			Matrix[i*image.cols + j] = Mi[j];
+		}
+	}
+	return Matrix;
+}
+
+double** Mat_change_to_2_Matrix(Mat image)  //Mat转换成普通的二维矩阵并返回
+{
+	int i, j;
+	double **Matrix1;
+	double *Mi;
+	int *aa; //二维行乘以列
+	aa = (int *)malloc(5 * sizeof(int *));
+	aa[0] = image.rows + 10;
+	aa[1] = image.cols + 10;
+	Mi = (double *)malloc(1000 * sizeof(double *));
+	Matrix1 = Create_2_Matrix(aa);
+	for (i = 0; i<image.rows; i++)  //行列遍历Mat,逐个像素点赋值给Matrix1这个普通矩阵
+	{
+		Mi = image.ptr<double>(i);
+		for (j = 0; j<image.cols; j++)
+		{
+			double value = Mi[j];
+			Matrix1[i][j] = Mi[j];
+			cout << Matrix1[i][j] << endl;
+		}
+	}
+	return Matrix1;
 }
 
 

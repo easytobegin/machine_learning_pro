@@ -42,10 +42,24 @@
     <ClCompile Include="mx_function.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="graph.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="maxflow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="graph.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="instances.inc">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

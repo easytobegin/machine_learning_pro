@@ -1,14 +1,15 @@
 #include"macros.h"
+#include<cstdio>
 #include<opencv2/opencv.hpp>
 using namespace cv;
 using namespace std;
 
 void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, const char *str); //声明
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+	/*FILE *stream;
+	freopen_s( &stream, "1.txt", "w", stdout );*/
 	const char* imagename = "sample.jpg";
-
 	//从文件中读入图像
 	Mat img = imread(imagename);
 

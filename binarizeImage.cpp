@@ -12,6 +12,9 @@ Mat Gauss_sommth(Mat image, double sigma, double radius, string method); //声明
 void Mat_Change_To_Matrix(Mat image);
 void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4);  //四个参数都是矩阵类型，都是二维矩阵
 //cvCreateTrackbar的回调函数
+double **Mat_change_to_2_Matrix(Mat image);
+double **Create_2_Matrix(const int *parameter); //建立一个矩阵,double型,二维
+
 void on_trackbar(int threshold)
 {
 	//canny边缘检测
@@ -71,9 +74,9 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	//canny边缘检测
 	Mat canny_result;
-	Canny(gray_image, canny_result, 60, 80);
+	Canny(gray_image, canny_result, 220, 230);
 	//cvNamedWindow("cannyResult");
-	//imshow("cannyResult", canny_result);
+	imshow("cannyResult", canny_result);
 	//waitKey(0);
 
 	//imshow("原始图:", image);
@@ -144,7 +147,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 		| (canny_result(Range(2, total_rows), Range(1, total_cols - 1)) & (dy <= 0)));
 
 	cout << "hc行:" << hc.rows << " " << "列:" << hc.cols << endl;
-	waitKey(0);
+	//waitKey(0);
 	/*imshow("hc:", hc);
 	waitKey(0);
 	*/
@@ -171,7 +174,6 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	vc = vc(Range(1, total_rows - 2), Range(1, total_cols - 2)); //638 * 1022
 
-
 	//imshow("vc", vc);
 	//waitKey(0);
 	//cout << 1500 - lap << endl;
@@ -191,35 +193,57 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 
 	//Mat_Change_To_Matrix(lap);
 	//cout<<lap<<endl;
-
-	//Mat_<float> b;
-	//lap.convertTo(b, CV_32F);
-
-	//cout << b << endl;
-
 	//cout<<1500 - lap<<endl;
 
 	//imshow("1500-lap",1500-lap);
 	//imshow("1500+lap",1500+lap);
 	//waitKey(0);
 
-	lap.convertTo(lap, CV_64FC1, 1.0 / 255, -1.0 / 255);
-
-	/*cout<<lap<<endl;
-	waitKey(0);*/
+	//lap.convertTo(lap,CV_64FC1,-1.0/255,1.0/255);
+	lap.convertTo(lap, CV_64FC1, -1.0 / 255, 1.0 / 255);
+	hc.convertTo(hc, CV_64FC1, 1.0 / 255);
+	//cout<<hc<<endl;
+	vc.convertTo(vc, CV_64FC1, 1.0 / 255);
+	//cout<<vc<<endl;
+	int test_rows = hc.rows;
+	int test_cols = hc.cols;
+	int test_rows1 = vc.rows;
+	int test_cols1 = vc.cols;
 	int i, j;
-	double *Mi;
-	Mi = (double *)malloc(1000 * sizeof(double *));
-	for (i = 0; i<lap.rows; i++)
+	/*for(i=0;i<test_rows;i++)
 	{
-		Mi = lap.ptr<double>(i);
-		for (j = 0; j<lap.cols; j++)
-		{
-			double value = Mi[j];
-			cout << value << endl;
-		}
+	for(j=0;j<test_cols;j++)
+	{
+	if(hc.at<uchar>(i,j) == 255)  //白
+	{
+	hc.at<uchar>(i,j) = 1;
 	}
-	//imgcut3(1500-lap,1500+lap,wgt*hc,wgt*vc);
+	else
+	hc.at<uchar>(i,j) = 0;
+	}
+	}
+	for(i=0;i<test_rows1;i++)
+	{
+	for(j=0;j<test_cols1;j++)
+	{
+	if(vc.at<uchar>(i,j) == 255)
+	{
+	vc.at<uchar>(i,j) = 1;
+	}
+	else
+	vc.at<uchar>(i,j) = 0;
+	}
+	}*/
+
+	//cout<<hc<<endl;
+	//cout<<hc*160.0<<endl;
+	/*imshow("hc:",hc*160);
+	imshow("vc:",vc*160);
+	imshow("lap:",lap*160);*/
+	//waitKey(0);
+	//cout<<lap<<endl;
+	//waitKey(0);
+	imgcut3(1500 - lap, 1500 + lap, 160.0*hc, 160.0*vc);
 }
 
 

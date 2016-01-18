@@ -1,9 +1,12 @@
 #include<iostream>
+#include"graph.h"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
 using namespace std;
 
+double* Mat_change_to_1_Matrix(Mat image); //Mat转换成普通的一维矩阵并返回
+double *Create_1_Matrix(int cols);//建立一个矩阵,double型,一维
 double **Create_2_Matrix(const int *parameter); //建立一个矩阵,double型,二维
 double ***Create_3_Matrix(const int *parameter); //建立一个矩阵,double型,三维
 void DestroyArray_2(double **Two_Mat, const int *parameter); //销毁二维矩阵
@@ -31,7 +34,6 @@ void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4)  //四个参数都是矩阵类型
 	long n, m, nmin;
 	double *src, *snk, *nbr;
 	double flow = 0;
-	double *out;
 
 	//建立一个图像矩阵转普通矩阵的函数
 	//mxGetDimensions不用那么麻烦,直接返回行数和列数
@@ -62,4 +64,169 @@ void imgcut3(Mat para1, Mat para2, Mat para3, Mat para4)  //四个参数都是矩阵类型
 		}
 	}
 
+
+	/*
+	获取各个Mat矩阵的范围
+	*/
+	int row1 = para1.rows; int col1 = para1.cols;
+	int row2 = para2.rows; int col2 = para2.cols;
+	int row3 = para3.rows; int col3 = para3.cols;
+	int row4 = para4.rows; int col4 = para4.cols;
+	int result1 = (row1 + 10) * (col1 + 10);
+	int result2 = (row2 + 10) * (col2 + 10);
+	int result3 = (row3 + 10) * (col3 + 10);
+	int result4 = (row4 + 10) * (col4 + 10);
+
+	src = (double *)malloc(result1 * sizeof(double *));
+	snk = (double *)malloc(result2 * sizeof(double *));
+
+	src = Mat_change_to_1_Matrix(para1); //Mat转普通矩阵
+
+	snk = Mat_change_to_1_Matrix(para2); //Mat转普通矩阵
+
+	typedef Graph<double, double, double> GraphType;
+	GraphType *g = new GraphType(dim1[0] * dim1[1],
+		(dim1[0] - 1)*dim1[1] + dim1[0] * (dim1[1] - 1));
+
+	// add nodes
+	for (i = 0; i < dim1[0] * dim1[1]; i++) {
+		g->add_node();
+	}
+	// add source/sink weights
+	for (i = 0; i < dim1[0] * dim1[1]; i++) {
+		g->add_tweights(i, src[i], snk[i]);
+	}
+
+	// add neighbor links
+	nbr = (double *)malloc(result3 * sizeof(double *));
+
+	nbr = Mat_change_to_1_Matrix(para3);
+	int cnt = 0, cnt1 = 0;
+
+	for (i = 0; i < dim1[0] - 1; i++)
+	{
+		for (j = 0; j < dim1[1]; j++)
+		{
+			if (nbr[i + j*(dim1[0] - 1)] == 0) //白色部分
+			{
+				g->add_edge(i + j*dim1[0], i + j*dim1[0] + 1,
+					nbr[i + j*(dim1[0] - 1)], nbr[i + j*(dim1[0] - 1)]);
+			}
+		}
+	}
+	nbr = Mat_change_to_1_Matrix(para4); //%lf
+
+
+	for (int i = 0; i<para4.rows; i++)
+	{
+		for (int j = 0; j<para4.cols; j++)
+		{
+			if (nbr[i*para4.cols + j] > 0) //黑色显示的
+			{
+				cnt++;
+				//cout<<i<<" "<<j<<endl;  //准确的
+			}
+			else
+			{
+				cnt1++;
+				//cout<<nbr[i*para4.cols+j]<<endl;
+			}
+		}
+	}
+
+
+	Mat res2(para4.rows, para4.cols, CV_64FC1, nbr);
+	//cout<<"res2:"<<res2<<endl;
+	/*imshow("res2",res2);
+	waitKey(0);
+	printf("%d个黑色字体%d白色像素点",cnt,cnt1);*/
+	for (i = 0; i < dim1[0]; i++)
+	{
+		for (j = 0; j < dim1[1] - 1; j++)
+		{
+			if (int(nbr[i + j*dim1[0]]) == 0) //逐列,连边，白色部分,黑色为字体 作者是大于>
+			{
+				//cout<<nbr[i+j*dim1[0]]<<endl;
+				g->add_edge(i + j*dim1[0], i + (j + 1)*dim1[0],
+					nbr[i + j*dim1[0]], nbr[i + j*dim1[0]]);
+				//cout<<"i:"<<i<<"j:"<<j<<endl;
+			}
+			/*else //白
+			{
+			cout<<"i:"<<i<<"j:"<<j<<endl;
+			}*/
+		}
+	}
+	// do calculation
+	flow = g->maxflow();
+
+
+	//输出为一维矩阵,out为输出参数第一个
+	int out[70000];
+
+	for (i = 0; i < dim1[0]; i++)
+	{
+		for (j = 0; j < dim1[1]; j++)
+		{
+			out[i + j*dim1[0]] = g->what_segment(i + j*dim1[0]) == GraphType::SINK;
+			//cout<<g->what_segment(i+j*dim1[0])<<" ";
+			//printf("%d ",out[i+j*dim1[0]]); //每次都是最后两个为1，奇怪.
+		}
+		//printf("\n");
+	}
+	int *out_test;
+	out_test = (int *)malloc(dim1[0] * dim1[1] * sizeof(int *));
+
+	int cnt10 = 0, cnt9 = 0;
+	for (i = 0; i<dim1[0]; i++)
+	{
+		for (j = 0; j<dim1[1]; j++)
+		{
+			//cout<<out[j+i*dim1[1]]<<endl; //几乎都是0
+			if (out[i + j*dim1[0]] == 0)
+			{
+				out_test[i + j *dim1[0]] = 0;
+				cnt9++;
+			}
+			else
+			{
+				out_test[i + j *dim1[0]] = 255;
+				cnt10++;
+			}
+			//cout<<out_test[i + j *dim1[0]]<<" ";
+		}
+		//printf("\n");
+	}
+	cout << "黑:" << cnt10 << "白:" << cnt9 << endl;
+
+	//Mat res(dim1[0],dim1[1],CV_16SC1,out_test);
+	Mat res(dim1[0], dim1[1], CV_8UC1);
+	//res.at<uchar>(0,0) = 0;
+	for (i = 0; i<dim1[0]; i++)
+	{
+		for (j = 0; j<dim1[1]; j++)
+		{
+			res.at<uchar>(i, j) = out_test[j + i*dim1[1]];
+		}
+	}
+	/*
+	for(i=0;i<dim1[0];i++)
+	{
+	for(j=0;j<dim1[1];j++)
+	{
+	res.at<uchar>(i,j) = out_test[i+j*dim1[0]];
+	}
+	}*/
+	//cout<<res.rows<<" "<<res.cols<<endl;
+	//waitKey(0);
+	imshow("After_do_imgcut3", res);
+	waitKey(0);
+
+
+
+	//可能还有另外一个输出参数,第二个
+	double out_2;
+	out_2 = flow;
+
+	delete g;
 }
