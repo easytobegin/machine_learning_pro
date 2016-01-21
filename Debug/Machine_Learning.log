@@ -1,4 +1,4 @@
-﻿生成启动时间为 2016/1/21 14:33:02。
+﻿生成启动时间为 2016/1/21 18:12:07。
      1>项目“G:\ML_pro\Machine_Learning\Machine_Learning\Machine_Learning.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          G:\vs2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt demo.cpp

@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char* argv[]){
 	/*FILE *stream;
 	freopen_s( &stream, "1.txt", "w", stdout );*/
-	const char* imagename = "sample.jpg";
+	const char* imagename = "value.jpg";
 	//从文件中读入图像
 	Mat img = imread(imagename);
 

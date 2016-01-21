@@ -175,12 +175,12 @@ void imgcut3(Mat para1,Mat para2,Mat para3,Mat para4)  //ËÄ¸ö²ÎÊı¶¼ÊÇ¾ØÕóÀàĞÍ£¬¶
 			//cout<<out[j+i*dim1[1]]<<endl; //¼¸ºõ¶¼ÊÇ0
 			if(out[i+j*dim1[0]] == 0)
 			{
-				out_test[i + j *dim1[0]] = 255;
+				out_test[i + j *dim1[0]] = 0;
 				cnt9++;
 			}
 			else
 			{
-				out_test[i + j *dim1[0]] = 0;
+				out_test[i + j *dim1[0]] = 255;
 				cnt10++;
 			}
 			//cout<<out_test[i + j *dim1[0]]<<" ";
