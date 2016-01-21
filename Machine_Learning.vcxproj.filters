@@ -45,6 +45,9 @@
     <ClCompile Include="maxflow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="imgcutmulti.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h">
@@ -60,6 +63,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="binarizeImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="binarizeImageAlg1.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="imgcutmulti.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

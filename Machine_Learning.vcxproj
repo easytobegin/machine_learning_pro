@@ -89,13 +89,16 @@
     <ClCompile Include="gsmooth.cpp" />
     <ClCompile Include="imgcut3.cpp" />
     <ClCompile Include="demo.cpp" />
+    <ClCompile Include="imgcutmulti.cpp" />
     <ClCompile Include="maxflow.cpp" />
     <ClCompile Include="mx_function.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binarizeImage.h" />
+    <ClInclude Include="binarizeImageAlg1.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="imgcut3.h" />
+    <ClInclude Include="imgcutmulti.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="mx_function.h" />
   </ItemGroup>

@@ -26,27 +26,27 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	int cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0;
 	if (wgt >= 0)
 	{
-	cnt1++;
-	nargin++;
+		cnt1++;
+		nargin++;
 	}
 	if (thi >= 0)
 	{
-	cnt2++;
-	nargin++;
+		cnt2++;
+		nargin++;
 	}
 	if (tlo >= 0)
 	{
-	cnt3++;
-	nargin++;
+		cnt3++;
+		nargin++;
 	}
 	if (sigE >= 0)
 	{
-	cnt4++;
-	nargin++;
+		cnt4++;
+		nargin++;
 	}
 	//默认值
 	if (nargin < 2 || cnt1 == 0)
-	wgt = 160;
+	wgt = 160;  //第二个参数,有可能是个列表,在binaizeImageAlg1中用到.
 	if (nargin < 3 || cnt2 == 0)
 	thi = 0.4;
 	if (nargin < 4 || cnt3 == 0)
