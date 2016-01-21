@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char* argv[]){
 	/*FILE *stream;
 	freopen_s( &stream, "1.txt", "w", stdout );*/
-	const char* imagename = "dongxi.png";
+	const char* imagename = "sample.jpg";
 	//从文件中读入图像
 	Mat img = imread(imagename);
 
@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
 	}
 
 	binarizeImage(img, -1, -1, -1, -1, imagename);
-	binarizeImageAlg1(img,-1,-1,-1);
+	//binarizeImageAlg1(img,-1,-1,-1);
 	//imshow("image", res);
 	//waitKey();
 

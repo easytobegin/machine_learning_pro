@@ -3,6 +3,7 @@
 #include<opencv2/opencv.hpp>
 #include<iostream>
 #include<vector>
+#include"mx_function.h"
 #include<cmath>
 
 using namespace cv;
@@ -122,7 +123,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 			if (nbr[i + j * dim1[0]] > 0) 
 			{    
 				// >0可能有问题先不改
-				g->add_edge(i + j*dim1[0], i + (j + 1)*dim1[0],
+				g->add_edge(i + j * dim1[0], i + (j + 1)*dim1[0],
 					mult[0] * nbr[i + j*dim1[0]], mult[0] * nbr[i + j*dim1[0]]);
 			}
 		}
@@ -189,63 +190,88 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 			}
 			flow = g->maxflow(true);
 		}
-	}
+		long allo = dim1[0] * dim1[1] + 10000;
 
-	long allo = dim1[0] * dim1[1] * imult + 10000;
+		vector<int> out(allo);
 
-	vector<int> out(allo);
-
-	for (i = 0; i < dim1[0]; i++)
-	{
-		for (j = 0; j < dim1[1]; j++)
+		for (i = 0; i < dim1[0]; i++)
 		{
-			out[i + j*dim1[0]] = g->what_segment(i + j * dim1[0]) == GraphType::SINK;
-			//cout<<g->what_segment(i+j*dim1[0])<<" ";
-			//printf("%d ",out[i+j*dim1[0]]);
-		}
-		//printf("\n");
-	}
-
-	int *out_test;
-	out_test = (int *)malloc(allo * sizeof(int *));
-
-
-	int cnt9 = 0, cnt10 = 0;
-	for (i = 0; i<dim1[0]; i++)
-	{
-		for (j = 0; j<dim1[1]; j++)
-		{
-			//cout<<out[j+i*dim1[1]]<<endl; //几乎都是0
-			if (out[i + j*dim1[0]] == 0)
+			for (j = 0; j < dim1[1]; j++)
 			{
-				out_test[i + j *dim1[0]] = 255;
-				cnt9++;
+				out[i + j*dim1[0]] = g->what_segment(i + j * dim1[0]) == GraphType::SINK;
+				//cout<<g->what_segment(i+j*dim1[0])<<" ";
+				//printf("%d ",out[i+j*dim1[0]]);
 			}
-			else
-			{
-				out_test[i + j *dim1[0]] = 0;
-				cnt10++;
-			}
-			//cout<<out_test[i + j *dim1[0]]<<" ";
+			//printf("\n");
 		}
-		//printf("\n");
-	}
-	cout << "黑:" << cnt10 << "白:" << cnt9 << endl;
 
-	//Mat res(dim1[0],dim1[1],CV_16SC1,out_test);
-	Mat res(dim1[0], dim1[1], CV_8UC1);
-	//res.at<uchar>(0,0) = 0;
-	for (i = 0; i<dim1[0]; i++)
-	{
-		for (j = 0; j<dim1[1]; j++)
+		int *out_test;
+		out_test = (int *)malloc(allo * sizeof(int *));
+
+
+		int cnt9 = 0, cnt10 = 0;
+		for (i = 0; i<dim1[0]; i++)
 		{
-			res.at<uchar>(i, j) = out_test[j + i*dim1[1]];
+			for (j = 0; j<dim1[1]; j++)
+			{
+				//cout<<out[j+i*dim1[1]]<<endl; //几乎都是0
+				if (out[i + j*dim1[0]] == 0)
+				{
+					out_test[i + j *dim1[0]] = 255;
+					cnt9++;
+				}
+				else
+				{
+					out_test[i + j *dim1[0]] = 0;
+					cnt10++;
+				}
+				//cout<<out_test[i + j *dim1[0]]<<" ";
+			}
+			//printf("\n");
 		}
+		cout << "黑:" << cnt10 << "白:" << cnt9 << endl;
+
+		//Mat res(dim1[0],dim1[1],CV_16SC1,out_test);
+		Mat res(dim1[0], dim1[1], CV_8UC1);
+		//res.at<uchar>(0,0) = 0;
+		for (i = 0; i<dim1[0]; i++)
+		{
+			for (j = 0; j<dim1[1]; j++)
+			{
+				res.at<uchar>(i, j) = out_test[j + i*dim1[1]];   //33个res
+			}
+		}
+
+		/*imshow("Do_imgcut3_result", res);
+		waitKey(0);*/
+
+		//cost为第二个参数
+		cost = (double *)malloc(nmult * sizeof(double *));
+		cost[imult] = flow;
 	}
-	cost = (double *)malloc(nmult * sizeof(double *));
-	cost[imult] = flow;
-	/*imshow("Do_imgcut3_result", res);
-	waitKey(0);*/
+
+	
+	/*
+	//必须开二维数组
+	int **out;
+	int i;
+	out = (int **)malloc((imult + 1) * sizeof(int *)); //+1的原因在于有边界,好判断元素个数
+	for (i = 0; i < imult + 1; i++)
+	{
+		out[i] = (int *)malloc(((dim1[0] * dim1[1]) + 1) * sizeof(int)); //原因同上
+	}
+
+	int k;
+	for (i = 0; i < imult; i++) //一共有33个
+	{
+		for (j = 0; j < dim1[0]; j++)
+		{
+			for (k = 0; k < dim1[1]; k++)
+			{
+				out[i][j + k*dim1[0]] = g->what_segment(j + k * dim1[0]) == GraphType::SINK;
+			}
+		}
+	}*/
 
 	delete g;
 }
