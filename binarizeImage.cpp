@@ -20,7 +20,7 @@ void on_trackbar(int threshold)
 	cvShowImage(pstrWindowsCannyTitle, g_pCannyImg);
 }
 
-void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, const char* str) //规定负数代表没有值
+void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, const char* str,Mat &hc,Mat &vc,Mat &lap) //规定负数代表没有值
 {
 	int nargin = 1; //image算一个参数
 	int cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0;
@@ -65,7 +65,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	imshow("Gray Image", gray_image);//显示灰度图；
 	waitKey(0);//等待直到用户按下一个按键之后退出。
 	*/
-	Mat lap; //合并dx和dy后的图像
+
 	Mat gray_image;
 	cvtColor(image, gray_image, CV_RGB2GRAY);//转换图片颜色，灰度处理
 	threshold(gray_image,gray_image,130,255,THRESH_BINARY);
@@ -146,8 +146,7 @@ void binarizeImage(Mat image, double wgt, double thi, double tlo, double sigE, c
 	/*
 	% Assemble matrices of edge connections -- horizontal and vertical
 	*/
-	Mat hc;
-	Mat vc;
+	
 
 	Mat test1, test2;
 	Mat test3, test4;

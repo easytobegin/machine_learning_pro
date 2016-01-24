@@ -12,14 +12,16 @@ using namespace std;
 const double esp = 10e-9;
 const double inf = 0x3f3f3f3f + 0.1;
 
-void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
+void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 {
+	
 	int i, j, imult;
 	int ndim = 2;
 	long n, m, min, nmult;
 	double *src, *snk, *nbr;
 	double flow = 0;
 	double *cost;
+
 
 	//mxArray *cell 一 维例如矩阵[[3*4],[1*2],[4*100]]
 	int *dim1;
@@ -105,7 +107,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 		for (j = 0; j < dim1[1]; j++) 
 		{
 			//mexPrintf("At (%d,%d).\n",i,j);
-			if (nbr[i + j*(dim1[0] - 1)] > 0) 
+			if (nbr[i + j*(dim1[0] - 1)] == 0) 
 			{   //  >0可能有问题,先不改
 				//mexPrintf("  Adding edge.\n",i,j);
 				g->add_edge(i + j*dim1[0], i + j*dim1[0] + 1,
@@ -120,7 +122,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 	{
 		for (j = 0; j < dim1[1] - 1; j++) 
 		{
-			if (nbr[i + j * dim1[0]] > 0) 
+			if (nbr[i + j * dim1[0]] == 0) 
 			{    
 				// >0可能有问题先不改
 				g->add_edge(i + j * dim1[0], i + (j + 1)*dim1[0],
@@ -149,7 +151,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 			{
 				for (j = 0; j < dim1[1]; j++) 
 				{
-					if (nbr[i + j*(dim1[0] - 1)] > 0) 
+					if (nbr[i + j*(dim1[0] - 1)] == 0) //> 
 					{
 						// if edge was saturated, mark nodes for reconsideration
 						if ((g->get_rcap(a) == 0) || (g->get_rcap(a2) == 0)) 
@@ -171,7 +173,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 			{
 				for (j = 0; j < dim1[1] - 1; j++) 
 				{
-					if (nbr[i + j*dim1[0]] > 0) 
+					if (nbr[i + j*dim1[0]] == 0) 
 					{
 						// if edge was saturated, mark nodes for reconsideration
 						if ((g->get_rcap(a) == 0) || (g->get_rcap(a2) == 0)) 
@@ -217,12 +219,12 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 				//cout<<out[j+i*dim1[1]]<<endl; //几乎都是0
 				if (out[i + j*dim1[0]] == 0)
 				{
-					out_test[i + j *dim1[0]] = 255;
+					out_test[i + j *dim1[0]] = 0;
 					cnt9++;
 				}
 				else
 				{
-					out_test[i + j *dim1[0]] = 0;
+					out_test[i + j *dim1[0]] = 255;
 					cnt10++;
 				}
 				//cout<<out_test[i + j *dim1[0]]<<" ";
@@ -242,8 +244,8 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4,double *mult)
 			}
 		}
 
-		/*imshow("Do_imgcut3_result", res);
-		waitKey(0);*/
+		imshow("imgcutmulti图像:", res);
+		waitKey(0);
 
 		//cost为第二个参数
 		cost = (double *)malloc(nmult * sizeof(double *));

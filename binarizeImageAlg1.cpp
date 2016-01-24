@@ -1,5 +1,7 @@
 #include"macros.h"
+#include"imgcutmulti.h"
 #include <opencv2/opencv.hpp>
+#include<algorithm>
 #include<cmath>
 using namespace cv;
 using namespace std;
@@ -7,7 +9,7 @@ using namespace std;
 const double esp = 10e-9;
 const double inf = 0x3f3f3f3f+0.1;
 
-void binarizeImageAlg1(Mat image, double thi, double tlo, double sigE) //¹æ¶¨¸ºÊý´ú±íÃ»ÓÐÖµ
+void binarizeImageAlg1(Mat image, double thi, double tlo, double sigE,Mat hc1,Mat vc1,Mat lap1) //¹æ¶¨¸ºÊý´ú±íÃ»ÓÐÖµ
 {
 	int nargin = 1; //imageËãÒ»¸ö²ÎÊý
 	int cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0;
@@ -61,9 +63,16 @@ void binarizeImageAlg1(Mat image, double thi, double tlo, double sigE) //¹æ¶¨¸ºÊ
 	clist[num] = inf; //±ß½ç
 
 	double *bsd;
-	bsd = (double *)malloc(34 * sizeof(double *));
+	/*bsd = (double *)malloc(34 * sizeof(double *));
 	for (i = 0; i < 32; i++) //numel(clist) = 33,Áã¾ØÕó
 	{
 		bsd[i] = 0;
-	}
+	}*/
+	sort(clist, clist + num + 1);
+	/*imshow("1500-lap1",1500-lap1);
+	imshow("1500+lap1", 1500 + lap1);
+	imshow("hc1:",hc1);
+	imshow("vc1:",vc1);
+	waitKey(0);*/
+	imgcutmulti(1500-lap1,1500+lap1,hc1,vc1,clist);   //imgcutmulti(1500-lap,1500+lap,double(hc),double(vc),sort(wgt));
 }

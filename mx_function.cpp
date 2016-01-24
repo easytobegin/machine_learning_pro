@@ -63,7 +63,10 @@ double ***Create_3_Matrix(const int *parameter) //建立一个矩阵,double型,三维
 {
 	
 }*/
-
+void DestroyArray_1(double *One_Mat) //销毁一维矩阵
+{
+	free((void *)One_Mat);
+}
 
 void DestroyArray_2(double **Two_Mat, const int *parameter) //销毁二维矩阵
 {
@@ -175,6 +178,7 @@ int *Get3Dimensions(double ***Dimensions, int &total_element) //返回各维度的元素
 	total_element = cnt * cnt1 * cnt2;
 	return result;
 }
+
 
 int Get_2_NumberOfElements(double **Dimensions) //二维,获取元素个数
 {
