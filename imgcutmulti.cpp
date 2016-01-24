@@ -22,6 +22,10 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 	double flow = 0;
 	double *cost;
 
+	/*for (i = 0; i < 33; i++)
+	{
+		cout << mult[i] << endl;
+	}*/
 
 	//mxArray *cell 一 维例如矩阵[[3*4],[1*2],[4*100]]
 	int *dim1;
@@ -168,6 +172,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 					}
 				}
 			}
+			DestroyArray_1(nbr);
 			nbr = Mat_change_to_1_Matrix(para4);
 			for (i = 0; i < dim1[0]; i++) 
 			{
@@ -243,7 +248,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 				res.at<uchar>(i, j) = out_test[j + i*dim1[1]];   //33个res
 			}
 		}
-
+		DestroyArray_1(nbr);  //销毁
 		imshow("imgcutmulti图像:", res);
 		waitKey(0);
 
