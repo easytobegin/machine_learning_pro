@@ -61,8 +61,7 @@ void binarizeImageAlg1(Mat image, double thi, double tlo, double sigE,Mat hc1,Ma
 		}
 	}
 	clist[num] = inf; //±ß½ç
-
-	double *bsd;
+	//double *bsd;
 	/*bsd = (double *)malloc(34 * sizeof(double *));
 	for (i = 0; i < 32; i++) //numel(clist) = 33,Áã¾ØÕó
 	{

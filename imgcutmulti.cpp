@@ -22,10 +22,10 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 	double flow = 0;
 	double *cost;
 
-	/*for (i = 0; i < 33; i++)
+	for (i = 0; i < 33; i++)
 	{
 		cout << mult[i] << endl;
-	}*/
+	}
 
 	//mxArray *cell 一 维例如矩阵[[3*4],[1*2],[4*100]]
 	int *dim1;
@@ -169,6 +169,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 							(mult[imult] - mult[imult - 1])*nbr[i + j*(dim1[0] - 1)]);
 						a = g->get_next_arc(a2);
 						a2 = g->get_next_arc(a);
+
 					}
 				}
 			}
@@ -221,7 +222,7 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 		{
 			for (j = 0; j<dim1[1]; j++)
 			{
-				//cout<<out[j+i*dim1[1]]<<endl; //几乎都是0
+				//cout<<out[j+i*dim1[1]]<<endl;
 				if (out[i + j*dim1[0]] == 0)
 				{
 					out_test[i + j *dim1[0]] = 0;
@@ -249,12 +250,14 @@ void imgcutmulti(Mat para1, Mat para2, Mat para3, Mat para4, double *mult)
 			}
 		}
 		DestroyArray_1(nbr);  //销毁
+		DestroyArray_1(out_test);
 		imshow("imgcutmulti图像:", res);
 		waitKey(0);
 
 		//cost为第二个参数
 		cost = (double *)malloc(nmult * sizeof(double *));
 		cost[imult] = flow;
+		cout << cost[imult] << endl;
 	}
 
 	

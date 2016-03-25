@@ -68,6 +68,11 @@ void DestroyArray_1(double *One_Mat) //销毁一维矩阵
 	free((void *)One_Mat);
 }
 
+void DestroyArray_1(int *One_Mat)
+{
+	free((void*)One_Mat);
+}
+
 void DestroyArray_2(double **Two_Mat, const int *parameter) //销毁二维矩阵
 {
 	int i;

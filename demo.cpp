@@ -23,6 +23,7 @@ int main(int argc, char* argv[]){
 	Mat	vc1;
 	Mat lap1;
 	binarizeImage(img, -1, -1, -1, -1, imagename,hc1,vc1,lap1); //hc1,vc1ÒıÓÃ
+
 	binarizeImageAlg1(img,-1,-1,-1,hc1,vc1,lap1);
 	//imshow("image", res);
 	//waitKey();
